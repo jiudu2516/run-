@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>列表渲染--过滤与排序</title>
+</head>
+<body>
+  <!--
+    1. 列表过滤
+    2. 列表排序
+  -->
+  <div id="demo">
+    <input type="text" v-model="searchName">
+    <ul>
+      <!-- 为每项提供唯一的 key 属性，从而给 Vue 一个提示,理想的 key 值是每项都有唯一的 id。需要使用 v-bind 将其与动态值绑定在一起 -->
+      <li v-for="(p, index) in filterPersons" :key="p.id"> 
+        {{p.id}}  --  {{p.name}}  --  {{p.age}}
+      </li>
+    </ul>
+
+    <button @click="sortType=2">按年龄升序</button>
+    <button @click="sortType=3">按年龄降序</button>
+    <button @click="sortType=1">原本顺序</button>
+
+  </div>
+
+  <script type="text/javascript" src="../js/vue.js"></script>
+  <script type="text/javascript">
+    new Vue({
+      el: '#demo',
+      data: {
+        searchName: '',
+        sortType: 1, //指定排序的类型, 1: 不排序, 2: 升序, 3: 降序
+        persons: [
+          {id: 1, name: 'Tom', age: 15},
+          {id: 2, name: 'Jack', age: 12},
+          {id: 4, name: 'Bob', age: 17},
+          {id: 6, name: 'Rose', age: 16},
+          {id: 8, name: 'Else', age: 13}
+        ]
+      },
+      computed: {
+        filterPersons () {
+          // 1 得到依赖数据
+          const {sortType, searchName, persons} = this
+
+          // 2 进行计算处理，产生结果数据并返回
+          // 过滤
+          const arr = persons.filter(p => p.name.indexOf(searchName) >= 0)
+
+          // 可能需要排序
+          if (sortType!==1) {
+            arr.sort((p1, p2) => {
+              if (sortType===2) {  // 升序
+                return p1.age - p2.age
+              }else{  // 降序
+                return p2.age - p1.age
+              }
+            })
+          }
+
+          return arr
+
+        }
+      }
+    })
+  </script>
+</body>
+</html>

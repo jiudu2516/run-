@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>05.条件渲染</title>
+</head>
+<body>
+<!--
+  1. 条件渲染指令
+    v-if
+    v-else
+    v-show
+  2. 比较v-if与v-show
+    如果需要频繁切换 v-show 较好
+-->
+
+  <div id="demo">
+    <p v-if="show">我成功了</p>
+    <p v-else>我失败了</p>
+
+    <p v-show="show">我做到了呢</p>
+    <p v-show="!show">我成功了呢</p>
+
+    <button @click="toggle">切换</button>
+  </div>
+  
+  <script type="text/javascript" src="../js/vue.js"></script>
+  <script type="text/javascript">
+    new Vue({
+      el: "#demo",
+      data: {
+        show: true
+      },
+      methods: {
+        toggle () {
+          this.show = !this.show
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>

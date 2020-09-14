@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue实例——生命周期</title>
+</head>
+<body>
+  <!--
+    1. vue对象的生命周期
+      1). 初始化显示
+        * beforeCreate()
+        * created()
+        * beforeMount()
+        * mounted()
+      2). 更新状态
+        * beforeUpdate()
+        * updated()
+      3). 销毁vue实例: vm.$destory()
+        * beforeDestory()
+        * destoryed()
+    2. 常用的生命周期方法
+      created()/mounted(): 发送ajax请求, 启动定时器等异步任务
+      beforeDestory(): 做收尾工作, 如: 清除定时器
+  -->
+
+  <div id="demo">
+    <button @click="destroyVM">destroy vue</button>
+    <p v-show="isShow" ref="content">{{isShow ? 'show...HELLO' : 'hide...HELLO' }}</p>
+    <!-- 
+      ref 被用来给元素或子组件注册引用信息。引用信息将会注册在父组件的 $refs 对象上 
+      在普通的 DOM 元素上使用，引用指向的就是 DOM 元素
+    -->
+  </div>
+
+  <script type="text/javascript" src="../js/vue.js"></script>
+  <script type="text/javascript">
+     new Vue({
+       el: "#demo",
+       data() {
+         return {
+           isShow: true
+         }
+       },
+
+      //  在实例初始化之后，立即同步调用，在数据观察(data observer)和 event/watcher 配置之前被调用。
+       beforeCreate () {
+         console.log('beforeCreate()', this.isShow)
+       },
+
+      //  实现数据代理：后面可以通过vm读取data中的数据
+      //  实例已完成以下的配置：数据观测(data observer)，
+      //  属性和方法的运算， watch/event 事件回调。然而，挂载阶段还没开始，$el 属性目前不可见。
+      created () {
+        console.log("created()", this.isShow)
+      },
+
+      // 在挂载开始之前被调用：相关的 render 函数首次被调用
+      beforeMount () {
+        console.log("beforeMount()")
+      },
+
+      //  在第一次显示之后执行一次  在实例挂载之后调用
+      mounted () {
+        this.intervalId = setInterval(() => {
+          console.log("-------")
+          this.isShow = !this.isShow
+        }, 1000);
+      },
+
+      beforeUpdate () {  // 读的是老界面
+        console.log('beforeUpdate()', this.isShow, this.$refs.content.innerHTML)
+      },
+
+      updated() { // 读的是新的界面
+        console.log('updated()', this.isShow, this.$refs.content.innerHTML)
+      },
+
+      // 销毁之前执行一次
+      beforeDestroy () {
+        clearInterval(this.intervalId)
+      },
+
+      destroyed() {
+        console.log('destroyed()')
+      },
+
+       methods: {
+         destroyVM() {
+           this.$destroy()
+         }
+       }
+     })
+  </script>
+</body>
+</html>

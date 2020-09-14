@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>计算属性和监视</title>
+</head>
+
+<body>
+
+  <!--
+    1. 计算属性
+      在computed属性对象中定义计算属性的方法
+      在页面中使用{{方法名}}来显示计算的结果
+    2. 监视属性:
+      通过通过vm对象的$watch()或watch配置来监视指定的属性
+      当属性变化时, 回调函数自动调用, 在函数内部进行计算
+    3. 计算属性高级:
+      通过getter/setter实现对属性数据的显示和监视
+      计算属性存在缓存, 多次读取只执行一次getter计算
+  -->
+  <div id="demo">
+    姓：<input type="text" placeholder="FirstName"><br>
+    名：<input type="text" placeholder="LastName"><br>
+    姓名1（单向）：<input type="text" placeholder="FullName1"><br>
+    姓名2（单向）：<input type="text" placeholder="FullName2"><br>
+    姓名3（双向）：<input type="text" placeholder="FullName3"><br>
+  </div>
+
+  <script type="text/javascript" src="../js/vue.js"></script>   
+  <!-- 说明这一段脚本语言是javascript。告诉浏览器这一段要按照javascript来解释执行。 -->
+  <script type="text/javascript">
+    /* 
+      给对象添加一个fullName属性, 要求如下
+      1. fullName属性的值: firstName-lastName
+      2. 如果改变firstName/lastName, fullName也要跟着变
+      3. 如果改变了fullName, firstName/lastName也随之改变
+    */
+    const p = {
+      FirstName: 'A',
+      LastName: 'B'
+    }
+    // p.FullName = p.FirstName + '-' + p.LastName   // 不能达到2和3的要求
+    // console.log(p.FullName)  //  A-B
+
+    // p.FirstName = 'C'
+    // p.LastName = 'D'
+    // console.log(p.FullName)  // 以为是 C-D  实际是 A-B   
+
+    // p.FullName = 'E-F'  
+    // console.log(p.FirstName, p.LastName)  // 以为是 E F 实际是 A  B
+
+
+    // 用Object.defineProperty()
+    Object.defineProperty(p, "FullName", {  // 匹配对象 ==> 属性描述符
+      // 数据描述符
+      // value: 'A-B'
+      // writable: false
+      // 存取描述符
+      // 当读取属性是自动调用，函数的返回值作为属性值，this是属性所属的对象
+      get(){
+        console.log('get()')
+        return this.FirstName + '-' + this.LastName
+      },
+      // 当修改了属性值时自动调用, 用来监视属性值的变化, this是属性所属的对象
+      set(value){   // 最新的属性值   E-F
+        console.log('set()', value)
+        // 去更新FirstName和LastName
+        const names = value.split('-')
+        this.FirstName = names[0]
+        this.LastName = names[1]
+      }
+    })
+
+    /* 
+      弄清楚回调函数的3个问题?
+      1. 什么时候回调执行?
+      2. 它的作用是什么?
+      3. 函数中的this是谁?
+    */
+   console.log(p.FullName)
+
+    p.FirstName = 'C'
+    p.LastName = 'D'
+    console.log(p.FullName)    
+
+    p.FullName = 'E-F'  
+    console.log(p.FirstName, p.LastName)  
+
+  </script>
+
+</body>
+
+</html>

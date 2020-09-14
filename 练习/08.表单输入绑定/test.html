@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>表单输入绑定</title>
+</head>
+<body>
+
+  <!-- 
+    1. 使用v-model(双向数据绑定)自动收集数据
+      text/textarea
+      checkbox
+      radio
+      select 
+  -->
+
+  <div id="demo">
+    <form action="/xxx" @submit.prevent="register">
+      <span>用户名：</span>
+      <input type="text" v-model="user.username"><br><br>
+
+      <span>密码：</span>
+      <input type="password" v-model="user.password"><br><br>
+
+      <span>性别：</span>
+      <input type="radio" id="female" v-model="user.sex" value="女">
+      <label for="female">女</label>
+
+      <input type="radio" id="male" v-model="user.sex" value="男">
+      <label for="male">男</label><br><br>
+
+      <span>爱好：</span>
+      <input type="checkbox" id="basket" v-model="user.likes" value="basket">
+      <label for="basket">篮球</label>
+
+      <input type="checkbox" id="foot" v-model="user.likes" value="foot">
+      <label for="foot">足球</label>
+
+      <input type="checkbox" id="pingpang" v-model="user.likes" value="pingpang">
+      <label for="pingpang">足球</label><br><br>
+
+      <span>城市：</span>
+      <select v-model="user.cityId">
+        <option value="">未选择</option>
+        <option v-for="(city, index) in allCities" :key="city.id" :value="city.id">{{city.name}}</option>
+      </select><br><br>
+
+      <span>介绍：</span>
+      <textarea rows="10" v-model="user.info"></textarea><br><br>
+
+      <input type="submit" value="注册">
+    </form>
+  </div>
+
+  <script type="text/javascript" src="../js/vue.js"></script>
+  <script type="text/javascript">
+     new Vue({
+       el: '#demo',
+       data () {
+         return {
+           user: {
+             username: '请输入用户名',
+             password: '请输入密码',
+             sex: '女',
+             likes: ['basket'],
+             cityId: '3',
+             info: '请做个介绍'
+           },
+           allCities: [
+             {id: 1, name: '北京'},
+             {id: 2, name: '上海'},
+             {id: 3, name: '重庆'}
+           ]
+         }
+       },
+       methods: {
+         register () {
+           alert('发送注册的ajax请求' + JSON.stringify(this.user))
+         }
+       }
+     })
+  </script>
+
+  
+</body>
+</html>

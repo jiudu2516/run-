@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>过滤与排序</title>
+</head>
+<body>
+
+  <div id="demo">
+    <input type="text" v-model="searchName">
+    <ul>
+      <li v-for="(item, index) in filterPersons" :key="item.id">
+        {{item.id}}  --  {{item.name}}  --  {{item.age}}
+      </li>
+    </ul>
+    <button @click="sortType=3">升序排列</button>
+    <button @click="sortType=2">降序排列</button>
+    <button @click="sortType=1">原本顺序</button>
+  </div>
+
+  <script type="text/javascript" src="../js/vue.js"></script>
+  <script type="text/javascript">
+    new Vue({
+      data: {
+        searchName: '',
+        sortType: 1,  //  排序类型  1  原本顺序  2  降序   3  升序
+        persons: [
+          {id: 1, name: 'Tom', age: 15},
+          {id: 2, name: 'Jack', age: 12},
+          {id: 4, name: 'Bob', age: 17},
+          {id: 6, name: 'Rose', age: 16},
+          {id: 8, name: 'Else', age: 13}
+        ]
+      },
+      computed: {
+        filterPersons () {
+          //  由原来data的搜索数据和原始数组计算后得到新的数组
+          // 1  得到依赖数据
+          const {sortType, searchName, persons} = this 
+          // console.log(this)
+
+          // 计算处理 产生结果数据并返回
+          // 过滤  data中原始数组
+          const arr = persons.filter(item => item.name.indexOf(searchName) >= 0 )
+          // 可能需要排序
+          if (sortType!==1) {
+            arr.sort((item1, item2) => {
+              if (sortType===2) {  // 降序
+                return item2.age - item1.age
+              } else {  //升序
+                return item1.age - item2.age
+              }
+            }) 
+          }
+
+          return arr
+        }
+      }
+    }).$mount('#demo')
+     
+  
+  </script>
+  
+</body>
+</html>

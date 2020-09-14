@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>计算属性和监视</title>
+</head>
+
+<body>
+
+  <!--
+    1. 计算属性
+      在computed属性对象中定义计算属性的方法
+      在页面中使用{{方法名}}来显示计算的结果
+    2. 监视属性:
+      通过通过vm对象的$watch()或watch配置来监视指定的属性
+      当属性变化时, 回调函数自动调用, 在函数内部进行计算
+    3. 计算属性高级:
+      通过getter/setter实现对属性数据的显示和监视
+      计算属性存在缓存, 多次读取只执行一次getter计算
+
+      用什么结构来缓存计算属性数据?
+      {
+        fullName1: 'A-B',
+        fullName3: 'A-B'
+      }
+  -->
+
+  <div id="demo">
+    姓：<input type="text" placeholder="FirstName" v-model="FirstName"><br>
+    名：<input type="text" placeholder="LastName" v-model="LastName"><br>
+    姓名1（单向）：<input type="text" placeholder="FullName1" v-model="FullName1"><br>
+    姓名2（单向）：<input type="text" placeholder="FullName2" v-model="FullName2"><br>
+    姓名3（双向）：<input type="text" placeholder="FullName3" v-model="FullName3"><br>
+  </div>
+
+  <script type="text/javascript" src="../js/vue.js"></script>   
+  <!-- 说明这一段脚本语言是javascript。告诉浏览器这一段要按照javascript来解释执行。 -->
+  <script type="text/javascript">
+    const vm = new Vue({
+      // el: "#demo",
+      data: {
+        FirstName: 'A',
+        LastName: 'B',
+        FullName2: 'A-B'
+
+      },
+
+      // 计算属性   通过计算动态产生一个要显示的结果数据
+      computed: {
+        /* 
+          计算属性方法: 包装getter
+          执行的时机:
+            初始显示第一个次执行, 得到初始值显示
+            依赖数据发生改变就会再次调用
+        */
+       FullName1 () {
+         console.log('FullName1()', this)
+         return this.FirstName + '-' + this.LastName
+       },
+       FullName3: {
+         get () {  // 计算产生要显示的值
+           console.log("FullName3 get()")
+           return this.FirstName + '-' + this.LastName
+         },
+         set (value) {  // 监视值的变化
+           console.log('FullName3 set()', value)
+           // 去更新FirstName和LastName
+           const names = value.split('-')  //  分隔成一个数组
+           this.FirstName = names[0]
+           this.LastName = names[1]
+         }
+       }
+      },
+
+      //  指定监视vm的哪个属性的变化
+      watch: {
+        FirstName (value) {   // 当firstName发生改变时自动回调
+          console.log('FirstName()', value)
+          // 更新FullName2
+          this.FullName2 = value + '-' + this.LastName
+        }
+      }
+      
+    })
+    vm.$mount('#demo')
+    // 监视LastName
+    vm.$watch('LastName', function (value) {
+      console.log('LastName()', value)
+      // 更新FullName2
+      this.FullName2 = this.FirstName + '-' + value
+    })
+
+   /* 
+  所有vue控制的回调函数的this都是vm或者组件对象
+  */
+
+  /* 
+  使用计算属性
+  1. 只用getter, 计算属性就是一个函数
+  2. 使用getter/setter, 计算属性是一个包含getter和setter的对象
+   */
+
+  </script>
+
+</body>
+
+</html>

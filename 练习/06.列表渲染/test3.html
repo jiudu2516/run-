@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>列表渲染</title>
+</head>
+<body>
+
+  <div id="demo">
+    <ul>
+      <!-- 每项提供唯一的 key 属性，从而给 Vue 一个提示,理想的 key 值是每项都有唯一的 id -->
+      <li v-for="(item, index) in persons" :key="item.id">
+        {{item.id}}   --   {{item.name}}   --   {{item.age}}   ---   
+        <button @click="deleteP(index)">删除</button>    ---   
+        <button @click="updateP(index, {id: Date.now(), name: 'ready', age: '18'})">更新</button>
+      </li>
+    </ul>
+  </div>
+
+  <script type="text/javascript" src="../js/vue.js"></script>
+  <script type="text/javascript">
+    new Vue({
+      data: {
+        persons: [
+          {id: 1, name: 'Tomy', age: 15},
+          {id: 2, name: 'Jack', age: 12},
+          {id: 4, name: 'Bobe', age: 17},
+          {id: 6, name: 'Rose', age: 16},
+          {id: 8, name: 'Else', age: 13}
+        ]
+      },
+      methods: {
+        deleteP (index) {
+          this.persons.splice(index, 1)
+        },
+        updateP (index, newP) {
+          this.persons.splice(index, 1, newP)
+        }
+      }
+    }).$mount('#demo')
+  </script>
+  
+</body>
+</html>
